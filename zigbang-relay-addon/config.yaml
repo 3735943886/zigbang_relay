@@ -20,6 +20,11 @@ startup: services
 boot: auto
 host_network: false
 
+# HA 표준 인증서 공유경로. 커뮤니티 "Let's Encrypt" add-on 등이 여기에 fullchain.pem/privkey.pem
+# 을 떨궈주면(HAOS 관례) 우리는 읽기전용으로 가져다 씀 — options.cert_file/cert_key 기본값 참조.
+map:
+  - "ssl:ro"
+
 # 9883(관찰자, 평문/무인증)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 컨테이너명으로만
 # 접근(예: 향후 커스텀 컴포넌트가 http://<slug>:9883). 외부 노출 필요하면 직접 추가할 것.
 ports:
@@ -36,8 +41,8 @@ options:
   replay_store: "state/replay.json"
   log_dir: "logs"
   upstream_insecure: true
-  cert_file: "certs/fullchain.pem"
-  cert_key: "certs/privkey.pem"
+  cert_file: "/ssl/fullchain.pem"   # Let's Encrypt add-on 등이 채워주는 HA 표준 경로(map: ssl:ro)
+  cert_key: "/ssl/privkey.pem"
   cert_name: "relay.example.com"
   answered_ttl_secs: 120
   answered_cap: 8192

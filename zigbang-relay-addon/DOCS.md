@@ -15,26 +15,38 @@ Docker Hub)가 가리키는 사전빌드 이미지를 pull한다. `.github/workf
 HA → 설정 → 애드온 → 애드온 스토어 → 우측 상단 ⋮ → 저장소 → 이 GitHub repo URL 추가 →
 "Zigbang Doorlock Relay" 설치.
 
-## 2. rules.json / cert 배치
+## 2. rules.json 배치
 
-`/data`(add-on 데이터 폴더, Samba 공유나 File editor add-on으로 접근 가능)에 아래를 채운다 —
-systemd/Docker 배포와 완전히 같은 레이아웃(`deploy/README.md` 참조):
+`/data`(add-on 데이터 폴더, Samba 공유나 File editor add-on으로 접근 가능)에 레포 루트의
+`rules.json`을 복사한다:
 
 ```
-/data/rules.json          # 레포 루트 rules.json 복사(핫리로드, 이후 add-on 재시작 불필요)
-/data/certs/fullchain.pem
-/data/certs/privkey.pem
+/data/rules.json
 ```
 
-cert는 certbot deploy-hook으로 자동 갱신하는 걸 권장(`deploy/README.md` §2, 경로만
-`/data/certs/`로 바꿔서). mtime 핫리로드라 add-on 재시작 불필요.
+락↔클라우드 메시지에 어떻게 응답/중계할지 정하는 규칙 파일이다 — **mtime 핫리로드**라 파일만
+갈아끼우면 add-on 재시작 없이 바로 반영된다.
 
-## 3. 옵션 설정
+## 3. cert — Let's Encrypt add-on 연동 (권장)
+
+도어락은 공인 CA 인증서만 수락한다(자체서명 무조건 거부, 호스트명도 검사함). HAOS엔 보통
+certbot을 직접 돌릴 셸이 없으니, **커뮤니티 "Let's Encrypt" add-on**을 같이 설치해서 쓰는 걸
+권장한다 — 그 add-on이 발급한 인증서는 HA 표준 공유경로 `/ssl/fullchain.pem`+`/ssl/privkey.pem`
+에 떨어지고, 이 add-on은 `map: ["ssl:ro"]`로 그 경로를 읽기전용으로 이미 가져다 쓰게 기본
+설정돼있다(`config.yaml`의 `cert_file`/`cert_key` 기본값 참조). 갱신도 mtime 핫리로드라 재시작
+불필요 — Let's Encrypt add-on이 갱신하면 자동으로 반영됨.
+
+**HAOS가 아니거나(예: Docker Compose로 직접 관리) `/ssl`을 안 쓰고 싶으면**: add-on "구성" 탭에서
+`cert_file`/`cert_key`를 `/data/certs/fullchain.pem`/`/data/certs/privkey.pem` 등 원하는 경로로
+바꾸고, 그 경로에 직접 인증서를 넣어주면 된다(certbot deploy-hook 등으로 자동화 가능, 마찬가지로
+mtime 핫리로드).
+
+## 4. 옵션 설정
 
 애드온 "구성" 탭에서 `cert_name`(실제 주입 도메인)과 `route[].upstream`(실클라우드 호스트)을
 편집. 나머지는 기본값으로 충분. 저장 후 애드온 재시작.
 
-## 4. 확인
+## 5. 확인
 
 "로그" 탭에서 `relay 시작 — routes=2 ...` 확인. 평문 tap(관찰자 9883)은 host로 안 열려있음 —
 HA 내부 도커망에서만 컨테이너명으로 접근 가능(의도적, `config.yaml` 주석 참조). 필요하면
