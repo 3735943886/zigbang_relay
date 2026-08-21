@@ -1,0 +1,75 @@
+# HA add-on 매니페스트. 필드 의미는 deploy/DOCKER.md·relay_config.rs 참조.
+# 이 파일 자체가 /data/options.json 으로 그대로 떨어져서 relay 가 읽는다(HA add-on 은 자동판별,
+# src/relay_config.rs::load 참조) — options/schema 아래 필드명은 RelayConfig 구조체와 1:1.
+name: "Zigbang Doorlock Relay"
+version: "0.1.1"
+slug: "zigbang_relay"
+description: "직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이 — 락은 그대로 두고 전체 트래픽 관찰/대신응답"
+url: "https://github.com/3735943886/zigbang_relay"
+arch:
+  - aarch64
+  - amd64
+
+# 루트 Dockerfile(scratch, s6-overlay 없음)을 그대로 씀 — HA 자체 빌드가 아니라 사전빌드 이미지 pull.
+# 이미지는 .github/workflows/docker-publish.yml 이 v* 태그 푸시때 자동 빌드+푸시(Docker Hub).
+# version 필드를 올릴 땐 반드시 같은 값으로 git tag(vX.Y.Z) 도 찍을 것 — 태그=버전이 곧 pull될 이미지.
+image: "3735943886/zigbang-relay"
+init: false
+
+startup: services
+boot: auto
+host_network: false
+
+# 9883(관찰자, 평문/무인증)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 컨테이너명으로만
+# 접근(예: 향후 커스텀 컴포넌트가 http://<slug>:9883). 외부 노출 필요하면 직접 추가할 것.
+ports:
+  18883/tcp: 18883
+  5683/udp: 5683
+ports_description:
+  18883/tcp: "MQTTS — 도어락이 실제 접속하는 포트(주입 serviceUrl 이 이 호스트:포트를 가리켜야 함)"
+  5683/udp: "UDP holepunch"
+
+options:
+  log_level: "info"
+  observer: "0.0.0.0:9883"
+  rules_file: "rules.json"
+  replay_store: "state/replay.json"
+  log_dir: "logs"
+  upstream_insecure: true
+  cert_file: "certs/fullchain.pem"
+  cert_key: "certs/privkey.pem"
+  cert_name: "relay.example.com"
+  answered_ttl_secs: 120
+  answered_cap: 8192
+  reconnect_secs: 15
+  route:
+    - name: "mqtts"
+      proto: "mqtts"
+      mode: "proxy"
+      listen: "0.0.0.0:18883"
+      upstream: "broker.vendor.example:8883"
+    - name: "holepunch"
+      proto: "udp"
+      mode: "proxy"
+      listen: "0.0.0.0:5683"
+      upstream: "brokerudp.vendor.example:5683"
+
+schema:
+  log_level: "list(error|warn|info|debug|trace)"
+  observer: "str?"
+  rules_file: "str"
+  replay_store: "str"
+  log_dir: "str"
+  upstream_insecure: "bool"
+  cert_file: "str"
+  cert_key: "str"
+  cert_name: "str?"
+  answered_ttl_secs: "int"
+  answered_cap: "int"
+  reconnect_secs: "int"
+  route:
+    - name: "str"
+      proto: "list(mqtts|udp|tcp)"
+      mode: "list(proxy|shadow|decloud)"
+      listen: "str"
+      upstream: "str?"

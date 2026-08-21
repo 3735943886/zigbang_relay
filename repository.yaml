@@ -1,0 +1,5 @@
+# Home Assistant add-on 저장소 매니페스트. HA의 Supervisor → 설정 → 애드온 → 저장소에
+# 이 GitHub repo URL을 추가하면 zigbang-relay-addon/ 이 애드온으로 노출된다.
+name: "Zigbang Doorlock de-cloud"
+url: "https://github.com/3735943886/zigbang_relay"
+maintainer: "3735943886 <3735943886@users.noreply.github.com>"
