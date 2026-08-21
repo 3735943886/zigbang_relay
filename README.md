@@ -13,8 +13,8 @@
 
 각 릴리즈 태그의 Assets에서 자신의 아키텍처에 맞는 파일을 받으면 됩니다.
 
-## Home Assistant Add-on
+## Home Assistant App(Add-on)
 
-`relay`를 HA add-on으로 설치하려면 HA → 설정 → 애드온 → 애드온 스토어 → 우측 상단 ⋮ → 저장소
+`relay`를 HA app으로 설치하려면 HA → 설정 → 앱 → 앱 스토어 → 우측 상단 ⋮ → 저장소
 → 이 저장소 URL(`https://github.com/3735943886/zigbang_relay`) 추가 → "Zigbang Doorlock Relay"
 설치. 설정법은 [`zigbang-relay-addon/DOCS.md`](zigbang-relay-addon/DOCS.md) 참조.
