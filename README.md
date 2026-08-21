@@ -1,6 +1,6 @@
 # zigbang_relay
 
-직방(삼성SDS IHP) 도어락 de-cloud 도구 배포 저장소입니다.
+직방(삼성SDS) 도어락 de-cloud 도구 배포 저장소입니다.
 
 ## 바이너리
 
