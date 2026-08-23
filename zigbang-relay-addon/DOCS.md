@@ -15,17 +15,18 @@ Docker Hub)가 가리키는 사전빌드 이미지를 pull한다. `.github/workf
 HA → 설정 → 애드온 → 애드온 스토어 → 우측 상단 ⋮ → 저장소 → 이 GitHub repo URL 추가 →
 "Zigbang Doorlock Relay" 설치.
 
-## 2. rules.json 배치
+## 2. rules/ 배치
 
 `/data`(add-on 데이터 폴더, Samba 공유나 File editor add-on으로 접근 가능)에 레포 루트의
-`rules.json`을 복사한다:
+`rules/` 디렉터리를 통째로 복사한다:
 
 ```
-/data/rules.json
+/data/rules/99-default.rhai
 ```
 
-락↔클라우드 메시지에 어떻게 응답/중계할지 정하는 규칙 파일이다 — **mtime 핫리로드**라 파일만
-갈아끼우면 add-on 재시작 없이 바로 반영된다.
+이 디렉터리 안의 `*.rhai`(파일명순 우선순위)가 락↔클라우드 메시지에 어떻게 응답/중계할지
+정하는 [Rhai](https://rhai.rs) 스크립트다 — **mtime 핫리로드**라 파일만 갈아끼우면 add-on
+재시작 없이 바로 반영된다. 각 파일이 정의할 수 있는 함수는 레포 루트 README §3 참고.
 
 ## 3. cert — Let's Encrypt add-on 연동 (권장)
 
