@@ -28,8 +28,9 @@ host_network: false
 map:
   - "ssl:ro"
 
-# 9883(관찰자, 평문/무인증)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 컨테이너명으로만
-# 접근(예: 향후 커스텀 컴포넌트가 http://<slug>:9883). 외부 노출 필요하면 직접 추가할 것.
+# 9883(관찰자)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 컨테이너명으로만
+# 접근(예: 향후 커스텀 컴포넌트가 http://<slug>:9883). 외부 노출 필요하면 직접 추가할 것
+# (그럴 땐 options.observer_user/observer_pass 로 인증도 같이 켤 것 — 기본은 무인증).
 ports:
   18883/tcp: 18883
   5683/udp: 5683
@@ -40,6 +41,8 @@ ports_description:
 options:
   log_level: "info"
   observer: "0.0.0.0:9883"
+  observer_user: ""   # 둘 다 채워야 관찰자 인증 활성화(기본은 빈 문자열=무인증, ports 를 직접
+  observer_pass: ""   # 열어서 host 로 노출할 때만 채우는 걸 권장 — 컨테이너망 안에서만 쓰면 불필요).
   rules_file: "rules"
   replay_store: "state/replay.json"
   log_dir: "logs"
@@ -65,6 +68,8 @@ options:
 schema:
   log_level: "list(error|warn|info|debug|trace)"
   observer: "str?"
+  observer_user: "str?"
+  observer_pass: "password?"
   rules_file: "str"
   replay_store: "str"
   log_dir: "str"
