@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.5
+
+- add-on: armv7·armhf(armv6) 아키텍처 지원 추가(라즈베리파이2/3/4 32비트, 라즈베리파이1/Zero 등
+  구형 보드 포함) — 이제 amd64/aarch64/armv7/armhf 4종.
+- fix: 9883 관찰자의 retain 캐시(신규 구독시 "마지막 상태" 즉시 재생)가 이전엔 최근 payload를
+  통째로 덮어써서, 도어락의 25분 주기 상태 풀덤프 뒤에 짧은 델타 하나만 와도 신규 구독자가
+  firmInfo/wifiStrength 같은 필드를 못 보는 문제가 있었음 — 이제 필드단위로 병합해서 유지됨.
+
+## 0.1.4
+
+- relay: 도어락 여러 대 동시접속 지원 — 세션 상태(원격주입 대상, on_tick 타이머, replay 저장소)가
+  전부 tpId(락 고유id)로 스코핑됨. 락 1대 배포엔 동작 변화 없음.
+- fix: 락이 여러 대일 때 서로의 remote-unlock 명령주입/재시작 타이밍이 뒤섞이던 레이스, 그리고
+  한 락의 keysync/credential replay가 다른 락에 잘못 재생되던 문제를 해결.
+
 ## 0.1.3
 
 - **[breaking]** 규칙파일이 `rules.json`(선언적 JSON)에서 `rules/*.rhai`([Rhai](https://rhai.rs)

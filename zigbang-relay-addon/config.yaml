@@ -2,16 +2,19 @@
 # 이 파일 자체가 /data/options.json 으로 그대로 떨어져서 relay 가 읽는다(HA add-on 은 자동판별,
 # src/relay_config.rs::load 참조) — options/schema 아래 필드명은 RelayConfig 구조체와 1:1.
 name: "Zigbang Doorlock Relay"
-version: "0.1.4"
+version: "0.1.5"
 slug: "zigbang_relay"
 description: "직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이 — 락은 그대로 두고 전체 트래픽 관찰/대신응답"
 url: "https://github.com/3735943886/zigbang_relay"
 arch:
   - aarch64
   - amd64
+  - armv7
+  - armhf
 
 # 루트 Dockerfile(scratch, s6-overlay 없음)을 그대로 씀 — HA 자체 빌드가 아니라 사전빌드 이미지 pull.
-# 이미지는 .github/workflows/docker-publish.yml 이 v* 태그 푸시때 자동 빌드+푸시(Docker Hub).
+# 이미지는 .github/workflows/binary-release.yml 의 docker-publish 잡이 v* 태그 푸시때 자동
+# 빌드+푸시(Docker Hub) — relay 바이너리 크로스빌드를 재사용해서 Dockerfile 안에서 다시 컴파일 안 함.
 # version 필드를 올릴 땐 반드시 같은 값으로 git tag(vX.Y.Z) 도 찍을 것 — 태그=버전이 곧 pull될 이미지.
 image: "3735943886/zigbang-relay"
 init: false
