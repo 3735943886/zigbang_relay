@@ -10,7 +10,9 @@
   `linux-i686`(iSH 등 32비트 x86 환경용) / `windows-amd64` / `macos-amd64`(Intel) /
   `macos-arm64`(Apple Silicon).
 - **`relay`** — 도어락↔클라우드 사이를 중계하는 상시 데몬. `linux-amd64` / `linux-arm64`.
-  Docker container, Home Assistant App, 또는 직접 실행 중 원하는 방법으로 선택 가능.
+  Docker container 또는 직접 실행. Home Assistant에선
+  [zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 통합의 내장 relay
+  (PyPI [`zigbang-relay`](https://pypi.org/project/zigbang-relay/))를 쓰세요.
 
 각 릴리즈 태그의 Assets에서 자신의 아키텍처에 맞는 파일을 받으면 됩니다.
 
@@ -18,9 +20,11 @@
 
 Docker 이미지: [3735943886/zigbang-relay](https://hub.docker.com/repository/docker/3735943886/zigbang-relay)
 
-## Home Assistant App(Add-on)
+## Home Assistant App(Add-on) — 지원 중단
 
-`relay`를 HA app으로 설치하려면 HA → 설정 → 앱 → 앱 스토어 → 우측 상단 ⋮ → 저장소
-→ 이 저장소 URL(`https://github.com/3735943886/zigbang_relay`) 추가 → "Zigbang Doorlock Relay"
-설치. 설정법은 [`zigbang-relay-addon/DOCS.md`](zigbang-relay-addon/DOCS.md) 참조.
+HA App은 **지원 중단(deprecated)**됐습니다. 새로 설치하지 말고
+[zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 통합의 **내장 relay** 모드를
+쓰세요(HA가 relay를 직접 실행 — App·포트 매핑·권한 설정 불필요). 기존 App 사용자는
+[`zigbang-relay-addon/DOCS.md`](zigbang-relay-addon/DOCS.md) 맨 위의 이전 방법을 참조하세요
+(도어락 재프로비저닝 불필요). App은 기존 설치를 위해 당분간 남겨두지만 새 기능은 추가하지 않습니다.
 

@@ -1,5 +1,11 @@
 # Zigbang Doorlock Relay
 
+> **⚠️ 지원 중단(deprecated)** — Home Assistant에선 이제
+> [zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 커스텀 통합의 **내장 relay**
+> 모드를 쓰세요(HA가 relay를 직접 실행 — add-on·포트 매핑·권한 설정 불필요). 이 add-on은 기존
+> 설치를 위해 당분간 남겨두지만 새 기능은 추가하지 않습니다. 이전 방법은 `DOCS.md` 맨 위 참조.
+> HA 밖에서 상시 띄우려면 Docker 이미지(`3735943886/zigbang-relay`)는 계속 지원합니다.
+
 직방(삼성SDS IHP) 도어락을 클라우드 경유 없이(de-cloud) 로컬에서 투명 릴레이 — 락은 그대로
 동작하면서 전체 MQTTS/UDP 트래픽을 관찰하고, `shadow` 모드에서는 서버 장애시에도 락이 계속
 동작하도록 로컬에서 대신 응답한다.

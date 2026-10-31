@@ -1,5 +1,16 @@
 # Changelog
 
+> **지원 중단(deprecated)**: Home Assistant에선
+> [zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 통합의 내장 relay를 쓰세요 —
+> 이전 방법은 DOCS 맨 위 참조. 이 add-on은 기존 설치용으로만 남겨둠(Docker 이미지는 계속 지원).
+
+## 0.1.8
+
+- relay: 락 세션 접속/종료를 관찰자(9883)에 이벤트로 알림 — `relay/session/<tpId>`
+  `{"tpId","online","peer","at"}`. 관찰자가 구독하는 순간엔 접속중 목록 스냅샷 `relay/sessions`
+  `{"online":[...]}`(비어있어도 보냄)과 락별 상세를 재생. 같은 락이 재접속한 뒤 옛 세션이 늦게 끝나도
+  offline은 안 보냄. zigbang_doorlock 통합의 "relay 연결" 센서가 이걸 씀.
+
 ## 0.1.7
 
 - fix(add-on): 구성 탭 설정(`/data/options.json`)을 안 읽고 `relay.toml`을 찾다가 기동 실패하던
