@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.1.7
+
+- fix(add-on): 구성 탭 설정(`/data/options.json`)을 안 읽고 `relay.toml`을 찾다가 기동 실패하던
+  문제 — 이미지 기본 CMD를 없애고, 인자 없이 뜨면 `/data/options.json`이 있을 때 자동으로 읽음
+  (없으면 기존처럼 `relay.toml`). (#1)
+  **주의**: 우회로 `/data/relay.toml`을 직접 만들어 쓰던 경우, 업데이트 후엔 구성 탭 값이 우선
+  적용되므로 그 내용을 구성 탭으로 옮긴 뒤 업데이트할 것.
+- fix(add-on): 이미지가 UID 10001로 돌아서 `/data` 아래 `logs/`·`state/` 생성 실패 + Let's Encrypt
+  add-on의 `/ssl/privkey.pem`(root 600)을 못 읽던 문제 — 이미지 기본 유저를 root로 변경(HA add-on
+  관례). 일반 Docker는 `--user $(id -u):$(id -g)`로 비root 실행 권장(기존 안내 그대로). (#1)
+- docs: DOCS §2 rules 경로를 실제 위치(`docker/rules/`)로 수정. (#1)
+
+## 0.1.6
+
+- fix: `cert_file`/`cert_key`가 없을 때 자체서명 인증서를 만들어 그 경로에 써버리던 동작 제거 —
+  하나만 있을 때(예: 공유경로 `/ssl`에 개인키만 있음) 남은 파일까지 덮어쓰는 문제가 있었음. 이제
+  인증서가 없으면 에러로 기동 실패. 랩/테스트용 자체서명이 필요하면 `cert_self_signed = true`
+  (그때도 둘 다 없을 때만 생성, 하나라도 있으면 절대 덮어쓰지 않음).
+- fix: 18883/5683/9883 포트 bind 실패 등으로 listener가 죽어도 프로세스는 FAIL 로그만 남기고
+  반쪽 상태로 계속 떠있던 문제 — 이제 에러로 종료해서 Docker `--restart`/add-on/HA 내장 relay가
+  재기동함.
+- 배포: relay 바이너리를 PyPI 패키지 `zigbang-relay`(Linux x86_64/aarch64 wheel)로도 배포 —
+  HA 커스텀 컴포넌트 zigbang_doorlock의 "내장 relay" 모드용.
+
 ## 0.1.5
 
 - add-on: armv7·armhf(armv6) 아키텍처 지원 추가(라즈베리파이2/3/4 32비트, 라즈베리파이1/Zero 등

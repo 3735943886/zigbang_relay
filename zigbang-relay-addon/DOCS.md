@@ -18,8 +18,8 @@ HA → 설정 → 애드온 → 애드온 스토어 → 우측 상단 ⋮ → �
 
 ## 2. rules/ 배치
 
-`/data`(add-on 데이터 폴더, Samba 공유나 File editor add-on으로 접근 가능)에 레포 루트의
-`rules/` 디렉터리를 통째로 복사한다:
+`/data`(add-on 데이터 폴더, Samba 공유나 File editor add-on으로 접근 가능)에 이 저장소의
+`docker/rules/` 디렉터리를 `rules/`라는 이름으로 통째로 복사한다:
 
 ```
 /data/rules/99-default.rhai

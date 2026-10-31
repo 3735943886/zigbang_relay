@@ -1,8 +1,9 @@
 # HA add-on 매니페스트. 필드 의미는 deploy/DOCKER.md·relay_config.rs 참조.
-# 이 파일 자체가 /data/options.json 으로 그대로 떨어져서 relay 가 읽는다(HA add-on 은 자동판별,
-# src/relay_config.rs::load 참조) — options/schema 아래 필드명은 RelayConfig 구조체와 1:1.
+# options 가 /data/options.json 으로 그대로 떨어지고, relay 는 인자 없이 뜨면 그 파일이 있을 때
+# 자동으로 읽는다(src/bin/relay.rs, 이미지에 CMD 없음) — options/schema 아래 필드명은 RelayConfig 구조체와 1:1.
+# 이미지는 root 로 돎(HA 관례) — /data·/ssl/privkey.pem 이 root 소유라 비root 면 못 읽음(Dockerfile 참조).
 name: "Zigbang Doorlock Relay"
-version: "0.1.5"
+version: "0.1.7"
 slug: "zigbang_relay"
 description: "직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이 — 락은 그대로 두고 전체 트래픽 관찰/대신응답"
 url: "https://github.com/3735943886/zigbang_relay"
