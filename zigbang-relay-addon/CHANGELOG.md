@@ -4,6 +4,13 @@
 > [zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 통합의 내장 relay를 쓰세요 —
 > 이전 방법은 DOCS 맨 위 참조. 이 add-on은 기존 설치용으로만 남겨둠(Docker 이미지는 계속 지원).
 
+## 0.1.9
+
+- fix: `upstream_insecure = false`가 신뢰 루트 없이(빈 RootCertStore) 접속해서 어떤 업스트림에도 붙지
+  못하던 문제 — 이제 공인CA(webpki-roots)로 정상 검증. 기본값(true, 검증 안 함)은 그대로. 참고로 직방
+  클라우드(`*.homeiot.zigbang-iot.com`) 인증서가 2026-07-27 만료된 채 서빙 중이라 false면 현재 접속
+  실패(업스트림 장애로 보고 Local로 동작).
+
 ## 0.1.8
 
 - relay: 락 세션 접속/종료를 관찰자(9883)에 이벤트로 알림 — `relay/session/<tpId>`

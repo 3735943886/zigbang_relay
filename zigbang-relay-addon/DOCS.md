@@ -20,7 +20,7 @@
 
 주의:
 - 인증서를 App 전용 경로(`/data/certs/...` 등)에 뒀다면 HA에선 그 경로가 안 보입니다 — 두 파일을
-  `/config/zigbang_certs/`(내장 모드 기본 경로)로 복사하세요.
+  `/config/zigbang_doorlock/certs/`(내장 모드 기본 경로)로 복사하세요.
 - 포트나 `mode`를 내장 relay 기본값(18883/5683, `shadow`)과 다르게 쓰고 있었다면 내장 relay 폼의 **고급** 섹션에서
   같은 값으로 맞추세요(`proxy`/`shadow` 지원). `decloud`는 아직 내장 모드에서 지원하지 않습니다 — 필요하면
   Docker로 띄우고 "외부" 방식으로 연결하세요.

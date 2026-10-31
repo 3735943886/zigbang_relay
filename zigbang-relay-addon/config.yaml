@@ -3,7 +3,7 @@
 # 자동으로 읽는다(src/bin/relay.rs, 이미지에 CMD 없음) — options/schema 아래 필드명은 RelayConfig 구조체와 1:1.
 # 이미지는 root 로 돎(HA 관례) — /data·/ssl/privkey.pem 이 root 소유라 비root 면 못 읽음(Dockerfile 참조).
 name: "Zigbang Doorlock Relay"
-version: "0.1.8"
+version: "0.1.9"
 slug: "zigbang_relay"
 description: "[지원 중단 — zigbang_doorlock 통합의 내장 relay로 이전] 직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이"
 url: "https://github.com/3735943886/zigbang_relay"
