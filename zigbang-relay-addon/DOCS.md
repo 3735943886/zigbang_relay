@@ -1,34 +1,5 @@
 # 설정
 
-> **⚠️ 지원 중단(deprecated)** — 새로 설치하지 말고
-> [zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock)의 **내장 relay** 모드를 쓰세요
-> ([RELAY_SETUP.md §5-0](https://github.com/3735943886/zigbang_doorlock/blob/master/RELAY_SETUP.md#5-0-내장-모드-권장)).
-> HA 밖에서 상시 띄우려면 Docker 이미지는 계속 지원합니다.
-
-## 내장 relay로 이전하기
-
-도메인·인증서·포트(18883/5683)가 그대로라 **도어락 재프로비저닝은 필요 없습니다**.
-
-1. 이 add-on의 구성 탭에서 `cert_name`(도메인)과 `cert_file`/`cert_key` 경로를 메모.
-2. 이 add-on을 **중지**하고 "부팅 시 시작"을 끔 — 켜둔 채면 18883/5683 포트가 겹쳐 내장 relay가
-   기동에 실패합니다.
-3. zigbang_doorlock 통합 설정에서 relay 방식을 **"내장"**으로 바꾸고 1의 도메인과 인증서 경로
-   입력(Let's Encrypt add-on을 쓰고 있었다면 `/ssl/` 경로가 기본값으로 채워져 있으니 그대로).
-4. HA 로그에 `내장 relay 시작`이 보이고 도어락 상태가 갱신되면 이 add-on을 삭제.
-
-`/data/rules/`를 직접 고쳐 쓰던 경우: 내장 relay는 패키지에 들어있는 기본 rules를 씁니다.
-
-주의:
-- 인증서를 App 전용 경로(`/data/certs/...` 등)에 뒀다면 HA에선 그 경로가 안 보입니다 — 두 파일을
-  `/config/zigbang_doorlock/certs/`(내장 모드 기본 경로)로 복사하세요.
-- 포트나 `mode`를 내장 relay 기본값(18883/5683, `shadow`)과 다르게 쓰고 있었다면 내장 relay 폼의 **고급** 섹션에서
-  같은 값으로 맞추세요(`proxy`/`shadow` 지원). `decloud`는 아직 내장 모드에서 지원하지 않습니다 — 필요하면
-  Docker로 띄우고 "외부" 방식으로 연결하세요.
-
----
-
-아래는 기존 설치를 위한 참고용입니다.
-
 ## 0. 사전빌드 이미지 — CI가 자동으로 올림, 수동 빌드 불필요
 
 이 add-on은 HA가 직접 빌드하지 않는다(루트 `Dockerfile`이 `FROM scratch`라 HA 표준 빌드
@@ -78,3 +49,17 @@ mtime 핫리로드).
 "로그" 탭에서 `relay 시작 — routes=2 ...` 확인. 평문 tap(관찰자 9883)은 host로 안 열려있음 —
 HA 내부 도커망에서만 컨테이너명으로 접근 가능(의도적, `config.yaml` 주석 참조). 필요하면
 `config.yaml`의 `ports`에 `9883/tcp` 추가해서 직접 열 수 있음(로컬신뢰망 밖으로는 절대 노출 금지).
+
+## 6. zigbang_doorlock 통합에 연결
+
+[zigbang_doorlock](https://github.com/3735943886/zigbang_doorlock) 통합 설정(또는 옵션)에서 relay 방식을
+**"외부"**로 고르고:
+
+- 호스트: 이 add-on의 **호스트명** — add-on 정보 페이지에 표시됨(보통 `e6fe778a-zigbang-relay`처럼
+  `<저장소 해시>-zigbang-relay`). 관찰자 9883은 host로 안 열려있어 HA 내부망에서 이 이름으로만 닿습니다.
+- 포트: `9883`
+- relay 사용자명/비밀번호: `observer_user`/`observer_pass`를 설정했을 때만.
+
+통합의 "내장 relay"에서 이 add-on으로 옮길 땐 둘이 같은 포트(18883/5683)를 쓰므로, 통합 옵션에서 먼저
+"외부"로 저장(내장 relay가 내려가 포트가 빔)한 뒤 이 add-on을 시작하세요. 도메인·인증서·포트가 같으면
+도어락 재프로비저닝은 필요 없습니다. 통합의 "relay 연결" 센서로 도어락이 다시 붙었는지 확인합니다.

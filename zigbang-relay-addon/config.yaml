@@ -5,11 +5,10 @@
 name: "Zigbang Doorlock Relay"
 version: "0.1.9"
 slug: "zigbang_relay"
-description: "[지원 중단 — zigbang_doorlock 통합의 내장 relay로 이전] 직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이"
+description: "직방(삼성SDS IHP) 도어락 de-cloud MQTTS+UDP 릴레이 — HA 재시작/업데이트와 무관하게 상시 동작"
 url: "https://github.com/3735943886/zigbang_relay"
-# 지원 중단: HA 에선 zigbang_doorlock 커스텀 통합의 "내장 relay"(PyPI zigbang-relay)가 대체.
-# 스토어에 deprecated 로 표시되고 신규 설치는 비권장 — 기존 설치는 계속 동작(이미지는 Docker 용으로 계속 나감).
-stage: deprecated
+# zigbang_doorlock 통합의 "내장 relay"(PyPI zigbang-relay)는 HA 와 함께 시작·종료됨. HAOS 에선 HA core 와 별개
+# 컨테이너로 도는 이 add-on 을 권장(통합은 "외부" 방식으로 이 add-on 의 observer 9883 에 연결).
 arch:
   - aarch64
   - amd64
@@ -32,8 +31,8 @@ host_network: false
 map:
   - "ssl:ro"
 
-# 9883(관찰자)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 컨테이너명으로만
-# 접근(예: 향후 커스텀 컴포넌트가 http://<slug>:9883). 외부 노출 필요하면 직접 추가할 것
+# 9883(관찰자)은 일부러 host 로 안 열어줌 — HA 내부 도커망에서 add-on 호스트명으로만 접근
+# (zigbang_doorlock 통합 "외부" 방식이 <호스트명>:9883 으로 붙음, DOCS §6). 외부 노출 필요하면 직접 추가할 것
 # (그럴 땐 options.observer_user/observer_pass 로 인증도 같이 켤 것 — 기본은 무인증).
 ports:
   18883/tcp: 18883
