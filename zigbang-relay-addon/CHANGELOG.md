@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.1.10
+
+- **보안 fix(shadow/decloud)**: 기본 규칙 `on_cloud_push`가 msgCode `MSGBA0300001`이면 전부 replay
+  저장했는데, 이 코드로는 크리덴셜 등록(func 408)뿐 아니라 **원격 열림(407)·삭제(420)·402·508**도 옴.
+  pinName이 없는 이것들이 `keysync//` 한 슬롯을 덮어써서, 마지막이 407이면 장애 후 락 재접속 부트스트랩
+  때 relay가 **열림 명령을 재생**할 수 있었음. 이제 이름 있는 func 408만 저장. proxy 모드(기본값)는
+  정책 규칙이 꺼져 있어 영향 없음. 기존 shadow/decloud 사용자는 `replay_store` 파일에서 `keysync//`
+  로 끝나는 키를 지울 것.
+- relay core 범용화: 기기 식별(clientId 해석)·dedup 키·토큰 기억·관찰자 retain(dataBus)·주입 대상을
+  Rust 하드코딩에서 rules 훅(`identify`/`correlation_id`/`learn`/`retain_key`/`retain_merge`/
+  `inject_target`/`decode`)으로 이전 — 직방 동작은 `99-default.rhai`가 그대로 재현. 다른 도어락은
+  core 수정 없이 규칙 파일 추가로 지원(비-JSON payload, `payload` 원문 응답 포함). README §3.
+- proxy 모드도 같은 `rules/`를 로드하되 정책 훅은 끔(프로토콜 훅만) — 커스텀 규칙의 기기 식별이
+  proxy에서도 적용됨. 타이머(`on_tick`)는 이제 정책 모드 세션에만 감(이전엔 proxy 세션에도 감).
+- 호환: `on_local_inject(msg, topic, ctx)` 3-인자 추가(2-인자도 호출됨). 단, 예전엔 relay가 주입 메시지의
+  `msg.authToken`을 클라우드 토큰으로 몰래 덮어써줬는데 이제 안 함 — 커스텀 2-인자 규칙이 이 값을 썼다면
+  `ctx.cloudAuthToken`(기본 규칙의 `learn`이 채움)으로 바꿀 것.
+- **breaking(관찰자 API)**: 세션 이벤트(`relay/session/<id>`) payload의 기기 id 필드가 `tpId` → `device`
+  (`{"device","online","peer","at"}`). zigbang_doorlock 통합은 `device`→`tpId`→토픽 순으로 읽는 버전부터
+  호환 — **"외부" 연결(add-on/Docker/systemd) 사용자는 통합을 먼저 업데이트**할 것(구버전 통합은 "relay
+  연결" 센서가 갱신 안 됨). 통합 내장 relay는 버전 고정이라 무관. 직접 구독하는 스크립트도 `device`로.
+
 ## 0.1.9
 
 - add-on: 지원 중단 철회. HAOS에서는 HA core와 별개로 실행되는 이 add-on에 zigbang_doorlock 통합을
