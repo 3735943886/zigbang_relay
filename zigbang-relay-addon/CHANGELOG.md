@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.12
+
+- **보안 fix(shadow/decloud)**: 관찰자 로컬주입(예: zigbang_doorlock 의 HA 키 등록/“HA 키 초기화”)은 replay
+  처리를 안 거쳐서, 주입 420 으로 지운 e-key 가 replay 에 남아 장애 후 부트스트랩 때 **옛 토큰이 재등록**될 수
+  있었음. 이제 주입도 클라우드 push 와 똑같이 `on_cloud_push` 로 replay 저장/삭제(decloud 에선 주입 등록한
+  e-key 가 부트스트랩 때 복원됨). 열림(407) 등은 기존처럼 저장 안 함.
+
 ## 0.1.11
 
 - **보안 fix(shadow/decloud)**: 기본 규칙이 비밀번호(NUM) 키 등록(func 408)까지 replay 에 저장 — 평문
