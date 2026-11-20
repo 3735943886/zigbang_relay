@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.11
+
+- **보안 fix(shadow/decloud)**: 기본 규칙이 비밀번호(NUM) 키 등록(func 408)까지 replay 에 저장 — 평문
+  비밀번호가 `replay_store` 에 남고, 앱에서 그 키를 지워도 replay 엔 그대로라 장애 후 락 재접속 부트스트랩
+  때 **지운 키가 다시 등록**될 수 있었음. 이제 replay 는 클라우드가 재접속마다 다시 보내주는 폰 e-key(이름
+  있는 NFC 408)만 저장하고, 삭제(토큰 420 / 슬롯 410)가 오면 그 항목을 지움. replay 키가
+  `keysync/NFC/<이름>` → `keysync/NFC/<pin 토큰>` 으로 바뀜 — 기존 shadow/decloud 사용자는 `replay_store`
+  파일을 지우고 시작할 것(다음 키싱크 때 다시 채워짐).
+- rules: `on_cloud_push(msg, topic, ctx)` 3-인자(2-인자 호환) + 리턴 `#{record, forget}` 지원 —
+  replay 삭제를 규칙에서 선언 가능(core 는 프로토콜 중립 유지).
+
 ## 0.1.10
 
 - **보안 fix(shadow/decloud)**: 기본 규칙 `on_cloud_push`가 msgCode `MSGBA0300001`이면 전부 replay
