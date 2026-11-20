@@ -25,6 +25,11 @@ HA → 설정 → 애드온 → 애드온 스토어 → 우측 상단 ⋮ → �
 /data/rules/99-default.rhai
 ```
 
+**add-on 을 업데이트할 때마다 `rules/`도 다시 복사해 덮어쓸 것** — relay 와 rules 는 버전을 맞춰야 한다.
+특히 0.1.10 부터는 기기 식별이 rules 로 옮겨져서, 예전 `rules/`를 그대로 두면 도어락이 식별되지 않고
+zigbang_doorlock 통합의 명령도 전달되지 않는다(통합은 0.4.3 이상 필요). shadow/decloud 모드였다면
+add-on 을 멈추고 `replay_store` 파일(`/data/state/replay.json` 등)을 지운 뒤 시작할 것(CHANGELOG 0.1.10~0.1.12).
+
 ## 3. cert — Let's Encrypt add-on 연동 (권장)
 
 도어락은 공인 CA 인증서만 수락한다(자체서명 무조건 거부, 호스트명도 검사함). HAOS엔 보통
